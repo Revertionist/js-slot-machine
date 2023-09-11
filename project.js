@@ -55,7 +55,7 @@ const getBet = (balance, numberOfLines) => {
     while (true) {
         const bet = prompt("Enter the betting amount per line: ");
         const betVal = parseInt(bet);
-        if (isNaN(betVal) || betVal <= 0 || betVal >= (balance / numberOfLines)) {
+        if (isNaN(betVal) || betVal <= 0 || betVal > (balance / numberOfLines)) {
             console.log("Invalid betting amount, try again.");
         } else {
             return betVal;
@@ -102,14 +102,33 @@ const printRows = (rows) => {
         let rowString = "";
         for (const [i, symbol] of row.entries()) {
             rowString += symbol;
-            if (i != row.length -1 ){
+            if (i != row.length - 1) {
                 rowString += " | ";
             }
         }
         console.log(rowString);
     }
-}
+};
 
+const getWinnings = (rows, bet, lines) => {
+    let winnings = 0;
+    for (let row = 0; row < lines; row++) {
+        const symbols = rows[row];
+        let allSame = true;
+
+        for (const symbol of symbols) {
+            if (symbol != symbols[0]) {
+                allSame = false;
+                break;
+            }
+        }
+
+        if (allSame) {
+            winnings += bet * SYMBOLS_VALUES[symbols[0]]
+        }
+    }
+    return winnings;
+};
 
 let balance = deposit();
 const numberOfLines = getNumberOfLines();
@@ -120,5 +139,7 @@ console.log(balance);
 console.log(numberOfLines);
 console.log(bet);
 console.log(reels);
-console.log(rows)
+console.log(rows);
 printRows(rows);
+const winnings = getWinnings(rows, bet, numberOfLines);
+console.log ("You Won $"+winnings);
