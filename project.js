@@ -1,11 +1,3 @@
-// 1. Deposite money
-// 2. Determine number of lines to bet on
-// 3. collect bet amount
-// 4. Spim the slot machine
-// 5. check if user won
-// 6. give winnings
-// 7. play again
-
 const prompt = require("prompt-sync")();
 
 const ROWS = 3;
@@ -130,16 +122,28 @@ const getWinnings = (rows, bet, lines) => {
     return winnings;
 };
 
-let balance = deposit();
-const numberOfLines = getNumberOfLines();
-const bet = getBet(balance, numberOfLines);
-const reels = spin();
-const rows = transpose(reels);
-console.log(balance);
-console.log(numberOfLines);
-console.log(bet);
-console.log(reels);
-console.log(rows);
-printRows(rows);
-const winnings = getWinnings(rows, bet, numberOfLines);
-console.log ("You Won $"+winnings);
+const game = () => {
+    let balance = deposit();
+    while (true) {
+        console.log ("You have a balance of $" + balance)
+        const numberOfLines = getNumberOfLines();
+        const bet = getBet(balance, numberOfLines);
+        balance -= bet * numberOfLines;
+        const reels = spin();
+        const rows = transpose(reels);
+        printRows(rows);
+        const winnings = getWinnings(rows, bet, numberOfLines);
+        balance += winnings;
+        console.log("You Won $" + winnings);
+        if (balance <= 0) {
+            console.log ("Your balance is empty");
+            break;
+        }
+        const playAgain = prompt("Do you want to play again (y/n)?");
+        if (playAgain != "y"){
+            break;
+        }
+    }
+};
+
+game();
